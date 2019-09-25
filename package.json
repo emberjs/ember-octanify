@@ -7,6 +7,10 @@
   "repository": "git@github.com:emberjs/ember-octanify.git",
   "author": "Robert Jackson <me@rwjblue.com>",
   "license": "MIT",
+  "scripts": {
+    "lint": "eslint --cache .",
+    "test": "qunit test.js"
+  },
   "devDependencies": {
     "eslint": "^6.4.0",
     "eslint-config-prettier": "^6.3.0",
