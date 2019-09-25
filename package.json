@@ -1,5 +1,5 @@
 {
-  "name": "ember-octanify",
+  "name": "@ember/octanify",
   "version": "1.0.0",
   "description": "Simple script to update an existing Ember 3.13 application to opt-in to Ember's Octane edition.",
   "repository": "git@github.com:emberjs/ember-octanify.git",
