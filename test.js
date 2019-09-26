@@ -83,6 +83,7 @@ module.exports = {
             '@ember/optional-features': '^1.0.0',
             'ember-cli': '*',
             '@ember/edition-utils': '^1.1.1',
+            '@glimmer/component': '^0.14.0-alpha.13',
           },
         },
         null,
