@@ -12,7 +12,7 @@ function updatePackageJSON(root) {
   pkg.devDependencies = pkg.devDependencies || {};
   pkg.devDependencies['@ember/edition-utils'] = '^1.1.1';
   pkg.devDependencies['@ember/optional-features'] = '^1.0.0';
-  pkg.devDependencies['@glimmer/component'] = '^0.14.0-alpha.13';
+  pkg.devDependencies['@glimmer/component'] = '^1.0.0-beta.1';
 
   fs.writeFileSync(packageJSONPath, JSON.stringify(pkg, null, 2), { encoding: 'utf-8' });
 }
@@ -78,7 +78,7 @@ async function main() {
   try {
     await migrateEmberCLIFile(root);
     await updatePackageJSON(root);
-    await updateOptionalFeatures(root);
+    // await updateOptionalFeatures(root);
   } catch (error) {
     console.error(error);
     throw error;
