@@ -4,6 +4,9 @@
 
 const path = require('path');
 const fs = require('fs');
+const { spawn } = require('child_process');
+// eslint-disable-next-line node/no-unpublished-require
+const chalk = require('chalk');
 
 function updatePackageJSON(root) {
   let packageJSONPath = path.join(root, 'package.json');
@@ -15,6 +18,7 @@ function updatePackageJSON(root) {
   pkg.devDependencies['@glimmer/component'] = '^1.0.0-beta.1';
 
   fs.writeFileSync(packageJSONPath, JSON.stringify(pkg, null, 2), { encoding: 'utf-8' });
+  console.log(chalk.green('Updated package.json\n'));
 }
 
 function migrateEmberCLIFile(root) {
@@ -43,42 +47,56 @@ module.exports = ${existingContents.trimRight()};\n`;
   fs.writeFileSync(newConfigPath, updatedContents, { encoding: 'utf-8' });
 
   fs.unlinkSync(oldConfigPath);
+
+  console.log(
+    chalk.green(
+      `Migrated ${chalk.underline('.ember-cli')} to ${chalk.underline('.ember-cli.js')}\n`
+    )
+  );
 }
 
-async function updateOptionalFeatures(root) {
-  let packageJSONPath = path.join(root, 'package.json');
-  let pkg = JSON.parse(fs.readFileSync(packageJSONPath, { encoding: 'utf-8' }));
+async function updateOptionalFeatures() {
+  console.log(
+    `About to update ${chalk.underline(
+      'config/optional-features.json'
+    )} you may be prompted for codemods`
+  );
+  const features = [
+    ['default-async-observers', true],
+    ['jquery-integration', false],
+    ['template-only-glimmer-components', true],
+    ['application-template-wrapper', false],
+  ];
 
-  let configPath = 'config/optional-features.json';
-  if (pkg['ember-addon'] && pkg['ember-addon'].configPath) {
-    configPath = pkg['ember-addon'].configPath;
+  for (let i = 0; i < features.length; i++) {
+    const feature = features[i];
+    await emberFeature(...feature);
   }
+  console.log();
+}
 
-  let config = {};
-  if (fs.existsSync(configPath)) {
-    let configContents = fs.readFileSync(configPath, { encoding: 'utf-8' });
-    config = JSON.parse(configContents);
-  }
-
-  config['application-template-wrapper'] = false;
-  config['default-async-observers'] = true;
-  config['jquery-integration'] = false;
-  config['template-only-glimmer-components'] = true;
-
-  let keys = Object.keys(config);
-  let newConfig = {};
-  keys.sort().forEach(key => (newConfig[key] = config[key]));
-
-  fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2), { encoding: 'utf-8' });
+async function emberFeature(feature, enable) {
+  return new Promise((resolve, reject) => {
+    const enableString = `${enable ? 'en' : 'dis'}able`;
+    const childProcess = spawn('ember', [`feature:${enableString}`, feature], { stdio: 'inherit' });
+    childProcess.on('exit', code => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(`Recieved exit code ${code} while trying to ${enableString} ${feature}`);
+      }
+    });
+  });
 }
 
 async function main() {
   let root = process.cwd();
 
   try {
+    console.log(chalk.bold('Octanifying your project\n'));
     await migrateEmberCLIFile(root);
+    await updateOptionalFeatures();
     await updatePackageJSON(root);
-    // await updateOptionalFeatures(root);
   } catch (error) {
     console.error(error);
     throw error;
