@@ -4,7 +4,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
+const execa = require('execa');
 const chalk = require('chalk');
 
 function updatePackageJSON(root) {
@@ -75,17 +75,8 @@ async function updateOptionalFeatures() {
 }
 
 async function emberFeature(feature, enable) {
-  return new Promise((resolve, reject) => {
-    const enableString = enable ? 'enable' : 'disable';
-    const childProcess = spawn('ember', [`feature:${enableString}`, feature], { stdio: 'inherit' });
-    childProcess.on('exit', code => {
-      if (code === 0) {
-        resolve();
-      } else {
-        reject(`Recieved exit code ${code} while trying to ${enableString} ${feature}`);
-      }
-    });
-  });
+  const enableString = enable ? 'enable' : 'disable';
+  return execa('ember', [`feature:${enableString}`, feature], { stdio: 'inherit' });
 }
 
 async function main() {
