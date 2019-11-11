@@ -5,7 +5,6 @@
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
-// eslint-disable-next-line node/no-unpublished-require
 const chalk = require('chalk');
 
 function updatePackageJSON(root) {
