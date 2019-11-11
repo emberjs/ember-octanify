@@ -77,7 +77,7 @@ async function updateOptionalFeatures() {
 
 async function emberFeature(feature, enable) {
   return new Promise((resolve, reject) => {
-    const enableString = `${enable ? 'en' : 'dis'}able`;
+    const enableString = enable ? 'enable' : 'disable';
     const childProcess = spawn('ember', [`feature:${enableString}`, feature], { stdio: 'inherit' });
     childProcess.on('exit', code => {
       if (code === 0) {
