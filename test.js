@@ -46,7 +46,12 @@ QUnit.module('@ember/octanify', function(hooks) {
       ),
     });
 
-    await execa(OCTANIFY_PATH);
+    let childProcessResult = await execa(OCTANIFY_PATH);
+    console.log('project', project);
+    console.log('childProcessResult', childProcessResult);
+
+    assert.equal(childProcessResult.exitCode, 0, 'child process exited with code of 0');
+    assert.equal(childProcessResult.stderr, '', 'Nothing is logged to stderr');
 
     let expected = {
       '.ember-cli.js': `'use strict';
