@@ -8,8 +8,10 @@ const execa = require('execa');
 const chalk = require('chalk');
 const sortPackageJson = require('sort-package-json');
 const DETECT_TRAILING_WHITESPACE = /\s+$/;
+const RUN_CODEMODS = process.argv.includes('--run-codemod');
+const SKIP_NPM = process.argv.includes('--skip-npm');
 
-function updatePackageJSON(root) {
+async function updatePackageJSON(root) {
   let packageJSONPath = path.join(root, 'package.json');
 
   let contents = fs.readFileSync(packageJSONPath, { encoding: 'utf8' });
@@ -30,7 +32,14 @@ function updatePackageJSON(root) {
   }
 
   fs.writeFileSync(packageJSONPath, updatedContents, { encoding: 'utf-8' });
+
+  let packageManager = fs.existsSync(path.join(root, 'yarn.lock')) ? 'yarn' : 'npm';
+
   console.log(chalk.green('Updated package.json\n'));
+  if (!SKIP_NPM) {
+    console.log(`Installing updated packages with ${packageManager}`);
+    await execa(packageManager, ['install'], { stdio: 'inherit' });
+  }
 }
 
 async function updateOptionalFeatures() {
@@ -57,7 +66,7 @@ async function emberFeature(feature, enable) {
   const enableString = enable ? 'enable' : 'disable';
   const args = [`feature:${enableString}`, feature];
 
-  if (process.argv.includes('--run-codemod')) {
+  if (RUN_CODEMODS) {
     args.push('--run-codemod');
   }
 

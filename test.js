@@ -8,7 +8,7 @@ const ROOT = process.cwd();
 const OCTANIFY_PATH = require.resolve('./index');
 
 async function octanify() {
-  return execa(OCTANIFY_PATH, ['--run-codemod']);
+  return execa(OCTANIFY_PATH, ['--run-codemod', '--skip-npm']);
 }
 
 QUnit.module('@ember/octanify', function(hooks) {
