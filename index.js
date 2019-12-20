@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const execa = require('execa');
 const chalk = require('chalk');
+const sortPackageJson = require('sort-package-json');
 const DETECT_TRAILING_WHITESPACE = /\s+$/;
 
 function updatePackageJSON(root) {
@@ -21,7 +22,8 @@ function updatePackageJSON(root) {
   pkg.devDependencies['@ember/optional-features'] = '^1.3.0';
   pkg.devDependencies['@glimmer/component'] = '^1.0.0';
 
-  let updatedContents = JSON.stringify(pkg, null, 2);
+  let sortedPkg = sortPackageJson(pkg);
+  let updatedContents = JSON.stringify(sortedPkg, null, 2);
 
   if (trailingWhitespace) {
     updatedContents += trailingWhitespace[0];
