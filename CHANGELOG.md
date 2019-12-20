@@ -1,3 +1,6 @@
+* Merge pull request #9 from rwjblue/add-glimmer-tracking (1608539)
+* Ensure `@glimmer/tracking` is installed. (ac16291)
+
 ## v2.0.0 (2019-12-20)
 
 #### :rocket: Enhancement
