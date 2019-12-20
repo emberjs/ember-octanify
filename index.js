@@ -53,7 +53,13 @@ async function updateOptionalFeatures() {
 
 async function emberFeature(feature, enable) {
   const enableString = enable ? 'enable' : 'disable';
-  return execa('ember', [`feature:${enableString}`, feature], { stdio: 'inherit' });
+  const args = [`feature:${enableString}`, feature];
+
+  if (process.argv.includes('--run-codemod')) {
+    args.push('--run-codemod');
+  }
+
+  return execa('ember', args, { stdio: 'inherit' });
 }
 
 async function main() {
