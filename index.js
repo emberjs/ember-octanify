@@ -23,6 +23,7 @@ async function updatePackageJSON(root) {
   pkg.devDependencies = pkg.devDependencies || {};
   pkg.devDependencies['@ember/optional-features'] = '^1.3.0';
   pkg.devDependencies['@glimmer/component'] = '^1.0.0';
+  pkg.devDependencies['@glimmer/tracking'] = '^1.0.0';
 
   let sortedPkg = sortPackageJson(pkg);
   let updatedContents = JSON.stringify(sortedPkg, null, 2);
