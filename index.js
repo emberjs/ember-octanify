@@ -6,17 +6,27 @@ const path = require('path');
 const fs = require('fs');
 const execa = require('execa');
 const chalk = require('chalk');
+const DETECT_TRAILING_WHITESPACE = /\s+$/;
 
 function updatePackageJSON(root) {
   let packageJSONPath = path.join(root, 'package.json');
-  let pkg = JSON.parse(fs.readFileSync(packageJSONPath, { encoding: 'utf-8' }));
+
+  let contents = fs.readFileSync(packageJSONPath, { encoding: 'utf8' });
+  let trailingWhitespace = DETECT_TRAILING_WHITESPACE.exec(contents);
+  let pkg = JSON.parse(contents);
 
   pkg.devDependencies = pkg.devDependencies || {};
   pkg.devDependencies['@ember/edition-utils'] = '^1.2.0';
   pkg.devDependencies['@ember/optional-features'] = '^1.3.0';
   pkg.devDependencies['@glimmer/component'] = '^1.0.0';
 
-  fs.writeFileSync(packageJSONPath, JSON.stringify(pkg, null, 2), { encoding: 'utf-8' });
+  let updatedContents = JSON.stringify(pkg, null, 2);
+
+  if (trailingWhitespace) {
+    updatedContents += trailingWhitespace[0];
+  }
+
+  fs.writeFileSync(packageJSONPath, updatedContents, { encoding: 'utf-8' });
   console.log(chalk.green('Updated package.json\n'));
 }
 
