@@ -90,8 +90,8 @@ QUnit.module('@ember/octanify', function(hooks) {
           name: 'foo',
           devDependencies: {
             '@ember/optional-features': '^1.3.0',
-            'ember-cli': '*',
             '@glimmer/component': '^1.0.0',
+            'ember-cli': '*',
           },
           ember: {
             edition: 'octane',
