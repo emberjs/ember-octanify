@@ -15,8 +15,9 @@ function updatePackageJSON(root) {
   let trailingWhitespace = DETECT_TRAILING_WHITESPACE.exec(contents);
   let pkg = JSON.parse(contents);
 
+  pkg.ember = pkg.ember || {};
+  pkg.ember.edition = 'octane';
   pkg.devDependencies = pkg.devDependencies || {};
-  pkg.devDependencies['@ember/edition-utils'] = '^1.2.0';
   pkg.devDependencies['@ember/optional-features'] = '^1.3.0';
   pkg.devDependencies['@glimmer/component'] = '^1.0.0';
 
@@ -28,40 +29,6 @@ function updatePackageJSON(root) {
 
   fs.writeFileSync(packageJSONPath, updatedContents, { encoding: 'utf-8' });
   console.log(chalk.green('Updated package.json\n'));
-}
-
-function migrateEmberCLIFile(root) {
-  let newConfigPath = path.join(root, '.ember-cli.js');
-  let oldConfigPath = path.join(root, '.ember-cli');
-
-  if (fs.existsSync(newConfigPath)) {
-    return false;
-  }
-
-  if (!fs.existsSync(oldConfigPath)) {
-    throw new Error(
-      'Does not seem to be a valid ember-cli project, please run `npx @ember/octanify` from within your ember-cli application or addon directly'
-    );
-  }
-
-  let existingContents = fs.readFileSync(oldConfigPath, { encoding: 'utf-8' });
-
-  let updatedContents = `'use strict';
-const { setEdition } = require('@ember/edition-utils');
-
-setEdition('octane');
-
-module.exports = ${existingContents.trimRight()};\n`;
-
-  fs.writeFileSync(newConfigPath, updatedContents, { encoding: 'utf-8' });
-
-  fs.unlinkSync(oldConfigPath);
-
-  console.log(
-    chalk.green(
-      `Migrated ${chalk.underline('.ember-cli')} to ${chalk.underline('.ember-cli.js')}\n`
-    )
-  );
 }
 
 async function updateOptionalFeatures() {
@@ -94,7 +61,6 @@ async function main() {
 
   try {
     console.log(chalk.bold('Octanifying your project\n'));
-    await migrateEmberCLIFile(root);
     await updateOptionalFeatures();
     await updatePackageJSON(root);
   } catch (error) {
