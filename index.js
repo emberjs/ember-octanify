@@ -12,9 +12,9 @@ function updatePackageJSON(root) {
   let pkg = JSON.parse(fs.readFileSync(packageJSONPath, { encoding: 'utf-8' }));
 
   pkg.devDependencies = pkg.devDependencies || {};
-  pkg.devDependencies['@ember/edition-utils'] = '^1.1.1';
-  pkg.devDependencies['@ember/optional-features'] = '^1.0.0';
-  pkg.devDependencies['@glimmer/component'] = '^1.0.0-beta.1';
+  pkg.devDependencies['@ember/edition-utils'] = '^1.2.0';
+  pkg.devDependencies['@ember/optional-features'] = '^1.3.0';
+  pkg.devDependencies['@glimmer/component'] = '^1.0.0';
 
   fs.writeFileSync(packageJSONPath, JSON.stringify(pkg, null, 2), { encoding: 'utf-8' });
   console.log(chalk.green('Updated package.json\n'));
