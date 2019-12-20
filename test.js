@@ -91,6 +91,7 @@ QUnit.module('@ember/octanify', function(hooks) {
           devDependencies: {
             '@ember/optional-features': '^1.3.0',
             '@glimmer/component': '^1.0.0',
+            '@glimmer/tracking': '^1.0.0',
             'ember-cli': '*',
           },
           ember: {
